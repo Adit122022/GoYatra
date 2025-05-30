@@ -2,43 +2,6 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 
 // Ensure the API key is available
 if (!process.env.GOOGLE_API_KEY) {
-  console.error(
-    "Error: GOOGLE_API_KEY is not set in the environment variables."
-  );
-  throw new Error("Missing GOOGLE_API_KEY");
-}
-
-// Initialize the Google Generative AI client
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
-
-async function chatWithGemini(message) {
-  try {
-    if (!message || typeof message !== "string") {
-      throw new Error("Invalid input message. It must be a non-empty string.");
-    }
-
-    // Obtain the model instance
-    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash-exp" });
-
-    // Structure the prompt correctly
-    const result = await model.generateContent({
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: message }],
-        },
-      ],
-    });
-
-    // Access the response text
-    const responseText = result.response.candidates[0].content.parts[0].text;
-
-    return responseText;
-  } catch (error) {
-    console.error("Gemini error:", error.message || error);const { GoogleGenerativeAI } = require("@google/generative-ai");
-
-// Ensure the API key is available
-if (!process.env.GOOGLE_API_KEY) {
   console.error("Error: GOOGLE_API_KEY is not set in the environment variables.");
   throw new Error("Missing GOOGLE_API_KEY");
 }
@@ -46,11 +9,12 @@ if (!process.env.GOOGLE_API_KEY) {
 // Initialize the Google Generative AI client
 const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
 
-// Use Gemini 2.0 model
-const GEMINI_MODEL = "gemini-2.0-pro";
+// Use the correct model
+const GEMINI_MODEL = "gemini-1.5-flash";
+
 
 /**
- * Chat with Gemini 2.0 as a travel planner
+ * Chat with Gemini as GoYatra's travel support assistant
  * @param {string} message - The user's query
  * @returns {Promise<string>} - The chatbot's response
  */
@@ -60,49 +24,53 @@ async function chatWithGemini(message) {
       throw new Error("Invalid input message. It must be a non-empty string.");
     }
 
-    // Get the Gemini 2.0 model
     const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
 
-    // Structure the prompt with system context
+    // System instructions with custom GoYatra details
     const prompt = [
       {
         role: "user",
         parts: [
           {
             text: `
-You're an AI called "GoYatra", an expert travel planner.
-Your job is to help users plan personalized trips by suggesting destinations, estimating budgets, offering weather and visa tips, and recommending unique experiences.
+You are "GoYatra Assistant", a helpful and friendly **customer support AI agent** for our travel website **GoYatra**.
 
-Be concise, friendly, and proactive with follow-up questions like:
-- What's your travel budget?
-- Are you traveling solo or with someone?
-- Do you prefer nature, history, or nightlife?
-- Any specific countries or dates in mind?
+Your job is to assist users with:
+- Booking issues (flights, hotels, packages)
+- Payment problems or refunds
+- Account and profile support
+- Cancellation or rescheduling
+- General travel help related to our services
+
+✅ Here's what you should **know about GoYatra**:
+- Flight booking is currently **under development**, so kindly inform users that it's not available yet.
+- Hotel and package bookings are available.
+- Weather details are included in the **Itinerary** section. If users ask about weather, guide them to check their itinerary.
+- To **reset passwords**, users must contact the developer via **support@goyatra.com**.
+- Refunds may take **5–7 business days** to process depending on the payment provider.
+- Users can view and manage bookings in their **profile section**.
+
+❗ If a user asks something unrelated to travel or customer support (e.g., jokes, astrology, programming help, etc.), reply:
+**"I'm your travel support assistant! Feel free to ask me anything related to bookings, payments, cancellations, or travel help."**
+
+Always be polite, clear, and empathetic. Sound human and supportive in your tone.
 
 Now respond to the user’s query:
-${message}
-            `.trim(),
+"${message}"
+          `.trim(),
           },
         ],
       },
     ];
 
-    // Generate the response
     const result = await model.generateContent({ contents: prompt });
 
-    // Extract the response text
     const responseText = result.response.candidates?.[0]?.content?.parts?.[0]?.text;
 
     return responseText || "I'm here to help with your travel plans! Can you clarify your request?";
   } catch (error) {
     console.error("Gemini error:", error.message || error);
     return "Sorry, I'm unable to respond right now. Please try again later.";
-  }
-}
-
-module.exports = chatWithGemini;
-
-    return "Sorry, I'm unable to respond right now.";
   }
 }
 
