@@ -33,14 +33,14 @@ const TripWeather = ({ tripId, tripPlan, setTripPlan }) => {
           return;
         }
 
-        console.log("Fetching trip details for ID:", tripId);
+        // console.log("Fetching trip details for ID:", tripId);
         const response = await axiosInstance.get(`/tripplan/${tripId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
 
-        console.log("Trip details response:", response.data);
+        // console.log("Trip details response:", response.data);
         const { trip } = response.data;
 
         // Check if trip data exists
@@ -102,7 +102,7 @@ const TripWeather = ({ tripId, tripPlan, setTripPlan }) => {
         }
         
         const data = await response.json();
-        console.log("Weather data:", data);
+        // console.log("Weather data:", data);
         setWeather(data);
         setWeatherError(null);
       } catch (error) {

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Send } from "lucide-react";
+import { PlaneTakeoff, Send } from "lucide-react";
+import { Link } from 'react-router-dom'
 
 const intentButtons = [
   { label: "🔁 Reset Password", message: "How can I reset my password?" },
@@ -133,7 +134,11 @@ botReply = botReply.trim();
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-3xl bg-white rounded-xl shadow-xl p-6 flex flex-col gap-5">
-        <h1 className="text-3xl font-bold text-center text-blue-700">🧭 AI Trip Planner</h1>
+       {/* Logo */}
+        <Link to="/" className="flex items-center justify-center gap-2.5 hover:opacity-80 transition-all">
+          <PlaneTakeoff className="text-primary-300" />
+          <h1 className="text-xl md:text-2xl font-bold">GoYatra</h1>
+        </Link>
 
         {/* Chat Display */}
         <div className="h-96 overflow-y-auto bg-gray-100 rounded-lg p-4 space-y-3">

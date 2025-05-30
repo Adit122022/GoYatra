@@ -133,10 +133,10 @@ const TripPlanDisplay = () => {
   }
 
   const { tripDetails, generatedPlan } = tripPlan;
-  console.log("Trip Details:", tripDetails);
-  console.log("Generated Plan:", generatedPlan);
+  // console.log("Trip Details:", tripDetails);
+  // console.log("Generated Plan:", generatedPlan);
   const { hotelOptions, itinerary } = generatedPlan;
-  console.log(hotelOptions)
+  // console.log(hotelOptions)
 
   const formatToINR = (priceStr) => {
     const exchangeRate = 83.5;

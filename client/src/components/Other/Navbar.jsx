@@ -37,7 +37,7 @@ export default function Navbar() {
         {/* Logo */}
         <Link to="/" className="flex items-center gap-2.5 hover:opacity-80 transition-all">
           <PlaneTakeoff className="text-primary-300" />
-          <h1 className="text-xl md:text-2xl font-bold">TRAWOMIND</h1>
+          <h1 className="text-xl md:text-2xl font-bold">GoYatra</h1>
         </Link>
 
         {/* Desktop Nav */}
