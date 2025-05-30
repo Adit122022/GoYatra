@@ -159,6 +159,3 @@ This project is licensed under the [MIT License](LICENSE).
 For any inquiries or feedback:
 
 * **GitHub**: [Adit122022](https://github.com/Adit122022)
-* **Email**: [your.email@example.com](mailto:your.email@example.com)
-
-```
