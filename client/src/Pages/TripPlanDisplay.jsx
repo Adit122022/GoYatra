@@ -159,15 +159,7 @@ const TripPlanDisplay = () => {
   return (
     <div className="max-h-screen overflow-x-hidden relative">
       <div className="max-w-7xl mt-15 mx-auto py-12 px-6">
-  {/* Weather */}
-        <motion.section
-          className="card bg-base-100 shadow-2xl mb-10 rounded-2xl border border-base-300 overflow-hidden"
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-           <TripWeather tripId={tripId} tripPlan={tripPlan} setTripPlan={setTripPlan}/>
-        </motion.section>
+
      
 
         {/* Trip Details */}
@@ -200,6 +192,16 @@ const TripPlanDisplay = () => {
               </div>
             </div>
           </div>
+        </motion.section>
+
+          {/* Weather */}
+        <motion.section
+          className="card bg-base-100 shadow-2xl mb-10 rounded-2xl border border-base-300 overflow-hidden"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+           <TripWeather tripId={tripId} tripPlan={tripPlan} setTripPlan={setTripPlan}/>
         </motion.section>
 
         {/* Hotel Options */}
