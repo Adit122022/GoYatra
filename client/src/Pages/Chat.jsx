@@ -132,16 +132,16 @@ botReply = botReply.trim();
 };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4 py-8">
-      <div className="w-full max-w-3xl bg-white rounded-xl shadow-xl p-6 flex flex-col gap-5">
+    <div className="min-h-screen  flex items-center justify-center px-4 py-8">
+      <div className="w-full max-w-3xl rounded-xl shadow-xl p-6 flex flex-col  gap-5">
        {/* Logo */}
-        <Link to="/" className="flex items-center justify-center gap-2.5 hover:opacity-80 transition-all">
+        <Link to="/" className="flex items-center justify-center  gap-2.5 hover:opacity-80 transition-all">
           <PlaneTakeoff className="text-primary-300" />
           <h1 className="text-xl md:text-2xl font-bold">GoYatra</h1>
         </Link>
 
         {/* Chat Display */}
-        <div className="h-96 overflow-y-auto bg-gray-100 rounded-lg p-4 space-y-3">
+        <div className="h-96 overflow-y-auto  rounded-lg p-4 space-y-3">
           {messages.map((msg, i) => (
             <div key={i} className={`flex ${msg.from === "user" ? "justify-end" : "justify-start"}`}>
               <div className={`rounded-lg px-4 py-2 max-w-xs text-sm ${
@@ -167,10 +167,9 @@ botReply = botReply.trim();
             <button
               key={i}
               onClick={() => handleSend(btn.message)}
-              className="text-xs border px-2 py-1 rounded hover:bg-gray-200 transition-all"
-            >
+              className="text-xs border border-gray-200 text-gray-800 bg-gray-300/20  py-0 px-1  rounded-full hover:bg-gray-200 transition-all" >
               <span className="hidden sm:inline">{btn.label}</span>
-              <span className="inline sm:hidden">{btn.label.trim()[0]}</span>
+              <span className="inline sm:hidden line-clamp-0">{btn.label.trim()[0]}</span>
             </button>
           ))}
         </div>

@@ -263,13 +263,13 @@ export default function EnhancedTravelForm() {
     }),
     option: (provided, state) => ({
       ...provided,
-      backgroundColor: state.isFocused ? "#dbeafe" : "#FFDBDB", // Light blue bg when focused
+      backgroundColor: state.isFocused ? "#d2d2d2" : "", // Light blue bg when focused
       color: "#000000", // Slate-800 for text
       padding: "10px 12px",
       cursor: "pointer",
       transition: "all 0.2s ease",
       "&:hover": {
-        backgroundColor: "#bfdbfe", // Slightly darker blue on hover
+        backgroundColor: "", // Slightly darker blue on hover
       },
     }),
     menu: (provided) => ({
@@ -392,7 +392,7 @@ export default function EnhancedTravelForm() {
               Duration
               <span className="inline ml-2 sm:hidden"> in days</span>
             </span>
-          </label>
+          </label>    
 
           <div
             className={`relative  mt-2 w-full ${errors.days ? "tooltip tooltip-open tooltip-error" : ""}`}
