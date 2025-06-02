@@ -7,7 +7,7 @@ const tripPlanRoutes = require("./routes/tripPlanRoutes.js");
 
 app.use(
   cors({
-    origin: process.env.CORS_URI, 
+    origin: "https://go-yatra-uyqb.vercel.app/", 
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
