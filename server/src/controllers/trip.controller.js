@@ -15,6 +15,7 @@ module.exports.createTrip = async (req, res) => {
   try {
     const { destination, days, budget, travelGroup } = req.body;
     const userId = req.user._id;
+     console.log(userId)
 
     if (!destination || !days || !budget || !travelGroup) {
       return res.status(400).json({ message: "All fields are required" });
@@ -85,9 +86,9 @@ module.exports.createTrip = async (req, res) => {
     await userModel.findByIdAndUpdate(userId, { $push: { trips: trip._id } });
 
    res.status(200).json({trip });
-  } catch (error) {
+  } catch(error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to generate trip" });
+    res.status(500).json({ message: `Failed to generate trip   ${error}` });
   }
 };
 

@@ -4,7 +4,7 @@ const userModel = require("../models/user.model");
 module.exports.authMiddleware = async (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
-    // console.log(`authtoken:${token}`);
+    console.log(`authtoken:${token}`);
     if (!token) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -19,7 +19,7 @@ module.exports.authMiddleware = async (req, res, next) => {
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
-
+ console.log(user);
     req.user = user; // Attach the user object to the request
     next();
   } catch (error) {
