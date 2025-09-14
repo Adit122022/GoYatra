@@ -1,0 +1,9 @@
+{
+    "doki.sticker.css": "z-index:100;background-position:100% 90%;;background-size:150px",
+    "doki.background.anchor": "",
+    "doki.background.path": "D:/levi.jpg",
+    "doki.sticker.path": "D:\\bg-vs-code.png",
+    "doki.wallpaper.path": "D:/levi.jpg",
+    "doki.background.enabled": true,
+    "doki.statusbar.name": "Levi"
+}

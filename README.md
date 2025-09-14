@@ -1,5 +1,6 @@
 ---
 
+
 # GoYatra
 
 **GoYatra** is a full-stack travel planning application designed to streamline the process of discovering, organizing, and booking travel experiences. Built with modern web technologies, GoYatra offers users an intuitive interface to explore destinations, manage itineraries, and make reservations seamlessly.

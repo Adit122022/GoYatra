@@ -19,7 +19,9 @@ module.exports.registerController = async (req, res) => {
       process.env.JWT_TOKEN
     );
 
-    res.status(200).json({ token, user });
+     const userObj  = user.toObject()
+     delete userObj.password; 
+    res.status(200).json({ token, userObj });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });
@@ -49,8 +51,10 @@ module.exports.loginController = async (req, res) => {
       { id: user._id, name: user.username },
       process.env.JWT_TOKEN
     );
+    const userObj = user.toObject()
+     delete userObj.password; 
 
-    res.status(200).json({ token, user });
+    res.status(200).json({ token, userObj });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: error.message });

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FaStar, FaMapMarkerAlt, FaClock, FaDollarSign, FaSun, FaLandmark, FaMap, FaCloudSun, FaBuilding } from "react-icons/fa";
+import { FaStar, FaMapMarkerAlt, FaClock, FaSun, FaLandmark, FaMap, FaBuilding } from "react-icons/fa";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { PlanContext } from "../components/context/TripContext";
 import { axiosInstance } from "../components/Axios/axios";
@@ -29,6 +29,7 @@ const TripPlanDisplay = () => {
         setLoading(true);
 
         try {
+          // api call  /tripplan
           const response = await axiosInstance.get(`/tripplan/${tripId}`, {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-const FALLBACK_IMAGE_URL = "https://via.placeholder.com/400x300?text=No+Image"; // 🛠️ You can replace this with any custom fallback URL
+const FALLBACK_IMAGE_URL = "https://www.himkhoj.com/wp-content/uploads/2020/08/d_h.png"; // 🛠️ You can replace this with any custom fallback URL
 
 module.exports.fetchPlacePhoto = async function (placeName) {
   try {

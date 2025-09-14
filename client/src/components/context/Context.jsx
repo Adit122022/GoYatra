@@ -1,5 +1,4 @@
 import { createContext, useState, useEffect } from "react";
-import axios from "axios";
 import { axiosInstance } from "../Axios/axios";
 export const AuthContext = createContext();
 const Context = ({ children }) => {
@@ -9,6 +8,7 @@ const Context = ({ children }) => {
       const response = await axiosInstance.get("user/check-auth", { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } });
       setUser({ id: response.data.userId });
     } catch (error) {
+       console.log(error)
       setUser(null);
     }
   };
