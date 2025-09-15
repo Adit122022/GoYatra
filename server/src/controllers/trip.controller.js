@@ -86,7 +86,7 @@ module.exports.createTrip = async (req, res) => {
     await userModel.findByIdAndUpdate(userId, { $push: { trips: trip._id } });
 
    res.status(200).json({trip });
-  } catch(error) {
+  } catch(error){
     console.error(error);
     res.status(500).json({ message: `Failed to generate trip   ${error}` });
   }
