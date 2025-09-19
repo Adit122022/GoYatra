@@ -7,11 +7,11 @@ const userSchema = new mongoose.Schema({
     unique: true,
   },
   username: {
-    type: "String",
+    type: String, // Corrected from "String" to String
     required: [true, "Username is required"],
   },
   email: {
-    type: "String",
+    type: String, // Corrected from "String" to String
     required: [true, "Email is required"],
   },
   trips: [

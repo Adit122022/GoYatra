@@ -14,10 +14,7 @@ const tripPlanRoutes = require("./routes/tripPlanRoutes.js");
 const allowedOrigins = [
   process.env.CORS_URI,
   "http://localhost:5173",
-  "https://go-yatra.vercel.app",
-  "https://go-yatra-git-main-team-async.vercel.app",
-  "https://go-yatra-1sb4ub182-team-async.vercel.app"
-
+  "https://5173-firebase-goyatragit-1757951790422.cluster-fdkw7vjj7bgguspe3fbbc25tra.cloudworkstations.dev"
 ];
 
 const corsOptions = {

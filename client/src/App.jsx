@@ -10,6 +10,7 @@ import TripPlanDisplay from "./Pages/TripPlanDisplay";
 import Chat from "./Pages/Chat";
 import SignInPage from "./Pages/SignInPage";
 import SignUpPage from "./Pages/SignUpPage";
+import TripHistory from "./Pages/TripHistory"; // Import TripHistory
 
 const App = () => {
   const { theme } = useTheme();
@@ -48,6 +49,15 @@ const App = () => {
           element={
             <SignedIn>
               <TripPlanDisplay />
+            </SignedIn>
+          }
+        />
+        {/* Add the new route for trip history */}
+        <Route
+          path="/trip-history"
+          element={
+            <SignedIn>
+              <TripHistory />
             </SignedIn>
           }
         />

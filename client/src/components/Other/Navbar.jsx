@@ -7,6 +7,7 @@ import {
   PlaneTakeoff,
   Menu,
   X,
+  History, // Import History icon
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { THEMES } from "../Themes/index";
@@ -38,6 +39,11 @@ export default function Navbar() {
           <Link to="/chat" className="btn btn-ghost gap-2">
             <PhoneCall className="text-primary-300" />
             <span className="hidden sm:inline">Customer Service</span>
+          </Link>
+
+          <Link to="/trip-history" className="btn btn-ghost gap-2">
+            <History className="text-primary-300" />
+            <span className="hidden sm:inline">History</span>
           </Link>
 
           {/* Theme Dropdown */}
@@ -98,6 +104,9 @@ export default function Navbar() {
             </Link>
             <Link to="/chat" className="btn btn-ghost w-full justify-start" onClick={toggleMenu}>
               <PhoneCall className="mr-2 text-primary-300" /> Customer Service
+            </Link>
+            <Link to="/trip-history" className="btn btn-ghost w-full justify-start" onClick={toggleMenu}>
+              <History className="mr-2 text-primary-300" /> History
             </Link>
 
             {/* Theme Dropdown */}
