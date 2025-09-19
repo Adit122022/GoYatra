@@ -2,9 +2,6 @@ const { chatModel } = require("../models/chat");
 const chatWithGemini = require("../utils/gemini");
 const intents = require("../utils/intents");
 
-
-
-
 module.exports.chatController = async (req, res) => {
   const { message } = req.body;
 

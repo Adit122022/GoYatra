@@ -6,7 +6,8 @@ import GooglePlacesAutocomplete from "react-google-places-autocomplete";
 import TiltedCard from "../components/ui/ReactBIt/TiltedCard";
 import { useNavigate } from "react-router-dom";
 import { PlanContext } from "../components/context/TripContext";
-import { axiosInstance } from "../components/Axios/axios";
+import useAxios from "../components/Axios/axios";
+import { useAuth } from "@clerk/clerk-react";
 const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
 export default function EnhancedTravelForm() {
@@ -16,9 +17,9 @@ export default function EnhancedTravelForm() {
   const [travelGroup, setTravelGroup] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { setTripPlan } = useContext(PlanContext);
   const [formStep, setFormStep] = useState(1);
+  const axiosInstance = useAxios();
 
   const navigate = useNavigate();
 
@@ -78,33 +79,6 @@ export default function EnhancedTravelForm() {
   ];
  
 
-  useEffect(() => {
-    const checkAuthStatus = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Please log in first.");
-        navigate("/login");
-        return;
-      }
-      try {
-        const response = await axiosInstance.get("/user/check-auth", {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        if (response.status === 200) {
-          setIsAuthenticated(true);
-        }
-      } catch (error) {
-        console.error("Authentication error:", error.response || error.message);
-        alert("Authentication failed. Please log in again.");
-        navigate("/login");
-      }
-    };
-
-    checkAuthStatus();
-  }, [navigate]);
-
   const handleCardClick = (type, value) => {
     if (type === "budget") {
       setBudget(value);
@@ -142,10 +116,6 @@ export default function EnhancedTravelForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!isAuthenticated) {
-      alert("You must be logged in to generate a trip.");
-      return;
-    }
 
     // Final validation of all fields
     const newErrors = {};
@@ -168,7 +138,6 @@ export default function EnhancedTravelForm() {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem("token");
       const response = await axiosInstance.post(
         "tripplan/createtrip",
         {
@@ -176,11 +145,6 @@ export default function EnhancedTravelForm() {
           days,
           budget,
           travelGroup,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
         }
       );
 

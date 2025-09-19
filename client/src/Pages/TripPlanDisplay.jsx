@@ -1,102 +1,69 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaStar, FaMapMarkerAlt, FaClock, FaSun, FaLandmark, FaMap, FaBuilding } from "react-icons/fa";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { PlanContext } from "../components/context/TripContext";
-import { axiosInstance } from "../components/Axios/axios";
+import { useTrip } from "../components/context/TripContext";
+import useAxios from "../components/Axios/axios";
 import Loader from "../components/Other/Loader";
 import TripWeather from "./TripWeather";
 
 const TripPlanDisplay = () => {
   const { tripId } = useParams();
-  const { tripPlan, setTripPlan } = useContext(PlanContext);
+  const { tripPlan, setTripPlan } = useTrip();
   const [loading, setLoading] = useState(true);
   const [openDay, setOpenDay] = useState(null);
-    const navigate = useNavigate();
+  const navigate = useNavigate();
+  const axiosInstance = useAxios();
 
-    // Weather API key (replace with your OpenWeatherMap API key)
-    // const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY; // Get from openweathermap.org
-    // const WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather";
 
-    useEffect(() => {
-      const fetchTripDetails = async () => {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          alert("Please log in first.");
-          navigate("/login");
-          return;
-        }
-        setLoading(true);
 
-        try {
-          // api call  /tripplan
-          const response = await axiosInstance.get(`/tripplan/${tripId}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          });
+  useEffect(() => {
+    const fetchTripDetails = async () => {
+      try {
+        const response = await axiosInstance.get(`/tripplan/${tripId}`);
 
-          const { trip } = response.data;
+        const { trip } = response.data;
 
-          setTripPlan({
-            generatedPlan: trip.generatedPlan,
-            tripDetails: {
-              location: trip.destination,
-              duration: trip.days + " days",
-              travelers: trip.travelGroup,
-              budget: trip.budget,
-            },
-          });
-        } catch (error) {
-          console.error("Error fetching trip details:", error);
-        } finally {
-          setLoading(false);
-        }
-      };
+        setTripPlan({
+          generatedPlan: trip.generatedPlan,
+          tripDetails: {
+            location: trip.destination,
+            duration: trip.days + " days",
+            travelers: trip.travelGroup,
+            budget: trip.budget,
+          },
+        });
+      } catch (error) {
+        console.error("Error fetching trip details:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      // const fetchWeather = async () => {
-      //   if (!tripPlan?.tripDetails?.location) return;
-      //   try {
-      //     const response = await axiosInstance.get(WEATHER_API_URL, {
-      //       params: {
-      //         q: tripPlan.tripDetails.location,
-      //         appid: WEATHER_API_KEY,
-      //         units: "metric", // Use Celsius
-      //       },
-      //     });
-      //     console.log("Weather data:", response.data);
-      //     setWeather(response.data);
-      //     setWeatherError(null);
-      //   } catch (error) {
-      //     console.error("Error fetching weather:", error);
-      //     setWeatherError("Unable to fetch weather data.");
-      //   }
-      // };
+    fetchTripDetails();
 
-      fetchTripDetails();
-      // fetchWeather();
-    }, [tripId, setTripPlan, navigate, tripPlan?.tripDetails?.location]);
+  }, [tripId, setTripPlan, navigate]);
 
 
 
   const downloadItinerary = () => {
     if (!generatedPlan || !itinerary) return;
-  
+
     let itineraryText = `Trip to ${tripDetails.location}\nDuration: ${tripDetails.duration}\nTravelers: ${tripDetails.travelers}\nBudget: ${tripDetails.budget}\n\nItinerary:\n`;
-  
+
     Object.entries(itinerary).forEach(([day, details]) => {
       //  console.log("Day:", day, "Details:", details); // Debugging line
-        
+
       itineraryText += `\n${day.toUpperCase()} - Theme: ${details.theme}\nBest Time to Visit: ${details.bestTimeToVisit}\nPlan:\n`;
       details.plan.forEach((activity, index) => {
         // console.log( "ACTIVITY__________---------->",activity)
         itineraryText += `  ${index + 1}. ${activity.placeName}\n`;
       });
     });
-  
+
     const blob = new Blob([itineraryText], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
-  
+
     const link = document.createElement("a");
     link.href = url;
     link.download = `Itinerary_${tripDetails.location.replace(/\s+/g, '_')}.txt`;
@@ -105,8 +72,8 @@ const TripPlanDisplay = () => {
     document.body.removeChild(link);
     URL.revokeObjectURL(url);
   };
-  
-  
+
+
 
   // Animation Variants
   const cardVariants = {
@@ -126,7 +93,8 @@ const TripPlanDisplay = () => {
   };
 
   if (loading) {
-    return <Loader />;
+    return <Loader tripDetails={tripPlan?.tripDetails} />;
+
   }
 
   if (!tripPlan || !tripPlan.tripDetails || !tripPlan.generatedPlan) {
@@ -141,16 +109,16 @@ const TripPlanDisplay = () => {
 
   const formatToINR = (priceStr) => {
     const exchangeRate = 83.5;
-  
+
     if (typeof priceStr !== "string") return "N/A";
-  
+
     // Extract numbers using RegExp
     const matches = priceStr.match(/\d+/g); // gets ["10", "20"]
     if (!matches || matches.length === 0) return "N/A";
-  
+
     // Use average or minimum price
     const numericPrice = (parseInt(matches[0]) + (parseInt(matches[1]) || 0)) / (matches[1] ? 2 : 1);
-  
+
     const inrPrice = numericPrice * exchangeRate;
     return inrPrice.toLocaleString("en-IN", {
       style: "currency",
@@ -161,7 +129,7 @@ const TripPlanDisplay = () => {
     <div className="max-h-screen overflow-x-hidden relative">
       <div className="max-w-7xl mt-15 mx-auto py-12 px-6">
 
-     
+
 
         {/* Trip Details */}
         <motion.section
@@ -195,14 +163,14 @@ const TripPlanDisplay = () => {
           </div>
         </motion.section>
 
-          {/* Weather */}
+        {/* Weather */}
         <motion.section
           className="card bg-base-100 shadow-2xl mb-10 rounded-2xl border border-base-300 overflow-hidden"
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-           <TripWeather tripId={tripId} tripPlan={tripPlan} setTripPlan={setTripPlan}/>
+          <TripWeather tripId={tripId} tripPlan={tripPlan} setTripPlan={setTripPlan} />
         </motion.section>
 
         {/* Hotel Options */}
@@ -255,7 +223,7 @@ const TripPlanDisplay = () => {
                           window.open(`https://www.booking.com/searchresults.en-gb.html?aid=8020813&amp;ss=${hotelName}`, "_blank");
                         }}
                       >
-                    
+
                         Book Now
                       </motion.button>
                       <motion.button
@@ -279,70 +247,70 @@ const TripPlanDisplay = () => {
             )}
           </motion.div>
         </section>
-{/* More Options of Hotel */}
-<motion.section
-  className="card bg-base-100 shadow-xl mb-10 rounded-2xl border border-base-300 overflow-hidden"
-  initial={{ opacity: 0, y: -50 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.6, ease: "easeOut" }}
->
-  <div className="card-body p-6 flex flex-col md:flex-row items-start md:items-center gap-4">
-    <FaBuilding className="text-4xl text-purple-600" />
-    <div className="md:flex items-center justify-between flex-1">
-     <div className="">
-     <h3 className="text-2xl font-bold   mb-2">
-        Find More Options in{" "}
-        <span className="text-purple-600">
-          {tripDetails?.location || "N/A"}
-        </span>
-      </h3>
-      <p className="text-sm  mb-4">
-        Discover the best hotel deals and stays tailored for your trip.
-      </p>
-     </div>
-      <Link
-        to={`https://www.booking.com/searchresults.en-gb.html?aid=8020813&ss=${tripDetails?.location}`}
-        className="inline-flex items-center gap-2 w-fit bg-purple-600 hover:bg-purple-700 text-white font-medium text-sm px-4 py-2 rounded-lg transition duration-300"
-        target="_blank"
-        rel="noreferrer"
-      >
-        Find Hotels
-        <svg
-          className="h-4 w-4"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 14 10"
+        {/* More Options of Hotel */}
+        <motion.section
+          className="card bg-base-100 shadow-xl mb-10 rounded-2xl border border-base-300 overflow-hidden"
+          initial={{ opacity: 0, y: -50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="M1 5h12m0 0L9 1m4 4L9 9"
-          />
-        </svg>
-      </Link>
-    </div>
-  </div>
-</motion.section>
+          <div className="card-body p-6 flex flex-col md:flex-row items-start md:items-center gap-4">
+            <FaBuilding className="text-4xl text-purple-600" />
+            <div className="md:flex items-center justify-between flex-1">
+              <div className="">
+                <h3 className="text-2xl font-bold   mb-2">
+                  Find More Options in{" "}
+                  <span className="text-purple-600">
+                    {tripDetails?.location || "N/A"}
+                  </span>
+                </h3>
+                <p className="text-sm  mb-4">
+                  Discover the best hotel deals and stays tailored for your trip.
+                </p>
+              </div>
+              <Link
+                to={`https://www.booking.com/searchresults.en-gb.html?aid=8020813&ss=${tripDetails?.location}`}
+                className="inline-flex items-center gap-2 w-fit bg-purple-600 hover:bg-purple-700 text-white font-medium text-sm px-4 py-2 rounded-lg transition duration-300"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Find Hotels
+                <svg
+                  className="h-4 w-4"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 10"
+                >
+                  <path
+                    stroke="currentColor"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M1 5h12m0 0L9 1m4 4L9 9"
+                  />
+                </svg>
+              </Link>
+            </div>
+          </div>
+        </motion.section>
         {/* Itinerary */}
         <section>
-        <div className="md:flex items-center justify-between ">
-        <h2 className="text-4xl font-extrabold mb-8 flex items-center">
-            <FaClock className="mr-3" /> Your Itinerary 📅
-          </h2>
-          {itinerary && 
-          <motion.button
-  onClick={downloadItinerary}
-  variants={buttonVariants}
-  whileTap="tap"
-  className="btn bg-primary/20 hover:scale-105 transition-all duration-200 animate-bounce  mt-4"
->
-  Download Itinerary 📄
-</motion.button>
-}
-        </div>
+          <div className="md:flex items-center justify-between ">
+            <h2 className="text-4xl font-extrabold mb-8 flex items-center">
+              <FaClock className="mr-3" /> Your Itinerary 📅
+            </h2>
+            {itinerary &&
+              <motion.button
+                onClick={downloadItinerary}
+                variants={buttonVariants}
+                whileTap="tap"
+                className="btn bg-primary/20 hover:scale-105 transition-all duration-200 animate-bounce  mt-4"
+              >
+                Download Itinerary 📄
+              </motion.button>
+            }
+          </div>
           {itinerary && Object.keys(itinerary).length > 0 ? (
             Object.keys(itinerary).map((day) => {
               const { theme, bestTimeToVisit, plan } = itinerary[day];
@@ -403,9 +371,8 @@ const TripPlanDisplay = () => {
                                   </svg>
                                 </div>
                                 <motion.div
-                                  className={`timeline-${
-                                    index % 2 === 0 ? "start" : "end"
-                                  } card bg-base-100 shadow-lg rounded-xl p-5 hover:bg-base-200 transition-colors w-full max-w-md lg:max-w-lg mx-4 my-2`}
+                                  className={`timeline-${index % 2 === 0 ? "start" : "end"
+                                    } card bg-base-100 shadow-lg rounded-xl p-5 hover:bg-base-200 transition-colors w-full max-w-md lg:max-w-lg mx-4 my-2`}
                                   variants={cardVariants}
                                   initial="hidden"
                                   animate="visible"
@@ -449,7 +416,7 @@ const TripPlanDisplay = () => {
                                       >
                                         <FaMap className="mr-2" /> View Map
                                       </motion.button>
-                                      
+
                                     </div>
                                   </div>
                                 </motion.div>

@@ -1,16 +1,16 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useContext } from "react";
 
 export const PlanContext = createContext();
 
-const TripContext = ({ children }) => {
+const TripProvider = ({ children }) => {
   const [tripPlan, setTripPlan] = useState(null);
   return (
-    <div>
-      <PlanContext.Provider value={{ tripPlan, setTripPlan }}>
-        {children}
-      </PlanContext.Provider>
-    </div>
+    <PlanContext.Provider value={{ tripPlan, setTripPlan }}>
+      {children}
+    </PlanContext.Provider>
   );
 };
 
-export default TripContext;
+export const useTrip = () => useContext(PlanContext);
+
+export default TripProvider;

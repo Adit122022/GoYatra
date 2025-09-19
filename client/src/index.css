@@ -5,9 +5,6 @@
   themes :all;
 }
 
-
-
-
 /* Split text is shiny text */
 .shiny-text {
   color: #b5b5b5a4; /* Adjust this color to change intensity/style */
@@ -35,4 +32,39 @@
 
 .shiny-text.disabled {
   animation: none;
+}
+
+/* Clerk Dark Theme Override for Coffee Theme */
+html[data-theme='coffee'] .cl-root-box[data-clerk-dark-theme='true'] .cl-card,
+html[data-theme='coffee'] .cl-root-box[data-clerk-dark-theme='true'] .cl-footer {
+  background-color: #2d211b !important;
+}
+
+html[data-theme='coffee'] .cl-root-box[data-clerk-dark-theme='true'] .cl-headerTitle,
+html[data-theme='coffee'] .cl-root-box[data-clerk-dark-theme='true'] .cl-headerSubtitle,
+html[data-theme='coffee'] .cl-root-box[data-clerk-dark-theme='true'] .cl-formFieldLabel,
+html[data-theme='coffee'] .cl-root-box[data-clerk-dark-theme='true'] .cl-dividerText,
+html[data-theme='coffee'] .cl-root-box[data-clerk-dark-theme='true'] .cl-footerActionText {
+  color: #c8bfae !important;
+}
+
+html[data-theme='coffee'] .cl-root-box[data-clerk-dark-theme='true'] .cl-socialButtonsBlockButton {
+    background-color: #403029 !important;
+    border-color: #654734 !important;
+    color: #c8bfae !important;
+}
+
+html[data-theme='coffee'] .cl-root-box[data-clerk-dark-theme='true'] .cl-formFieldInput {
+  background-color: #403029 !important;
+  color: #c8bfae !important;
+  border-color: #654734 !important;
+}
+
+html[data-theme='coffee'] .cl-root-box[data-clerk-dark-theme='true'] .cl-formButtonPrimary {
+  background-color: #654734 !important;
+  color: #ffffff !important;
+}
+
+html[data-theme='coffee'] .cl-root-box[data-clerk-dark-theme='true'] .cl-footerActionLink {
+  color: #8a6f5e !important;
 }

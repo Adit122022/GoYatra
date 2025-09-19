@@ -1,57 +1,54 @@
 import React from "react";
-import Hyperspeed from '../ui/ReactBIt/Hyperspeed';
 
-const Loader = () => (
-
-  // the component will fill the height/width of its parent container, edit the CSS to change this
-  // the options below are the default values
-  
- <div className="h-screen overflow-hidden  w-screen">
-   <Hyperspeed
-    effectOptions={{
-      onSpeedUp: () => { },
-      onSlowDown: () => { },
-      distortion: 'turbulentDistortion',
-      length: 400,
-      roadWidth: 10,
-      islandWidth: 2,
-      lanesPerRoad: 4,
-      fov: 90,
-      fovSpeedUp: 150,
-      speedUp: 2,
-      carLightsFade: 0.4,
-      totalSideLightSticks: 20,
-      lightPairsPerRoadWay: 40,
-      shoulderLinesWidthPercentage: 0.05,
-      brokenLinesWidthPercentage: 0.1,
-      brokenLinesLengthPercentage: 0.5,
-      lightStickWidth: [0.12, 0.5],
-      lightStickHeight: [1.3, 1.7],
-      movingAwaySpeed: [60, 80],
-      movingCloserSpeed: [-120, -160],
-      carLightsLength: [400 * 0.03, 400 * 0.2],
-      carLightsRadius: [0.05, 0.14],
-      carWidthPercentage: [0.3, 0.5],
-      carShiftX: [-0.8, 0.8],
-      carFloorSeparation: [0, 5],
-      colors: {
-        roadColor: 0x080808,
-        islandColor: 0x0a0a0a,
-        background: 0x000000,
-        shoulderLines: 0xFFFFFF,
-        brokenLines: 0xFFFFFF,
-        leftCars: [0xD856BF, 0x6750A2, 0xC247AC],
-        rightCars: [0x03B3C3, 0x0E5EA5, 0x324555],
-        sticks: 0x03B3C3,
-      }
-    }}
-  />
-  <div className="inline sm:hidden z-20 absolute  top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-3xl font-bold text-center mt-4 ">
-    <p>Loading...</p>
-    <p className="text-xs">We are preparing your trip</p>
-  </div>
- </div>
+const SkeletonBox = ({ className }) => (
+  <div className={`animate-pulse bg-gray-300 rounded ${className}`} />
 );
 
-export default Loader;
-  
+export default function TripSkeleton() {
+  return (
+    <div className="max-w-7xl mx-auto py-12 px-6 space-y-8">
+      {/* Trip Details Skeleton */}
+      <div className="card bg-base-100 shadow-xl rounded-2xl border border-base-300 p-8">
+        <SkeletonBox className="h-8 w-1/3 mb-6" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <SkeletonBox key={i} className="h-6 w-32" />
+          ))}
+        </div>
+      </div>
+
+      {/* Weather Skeleton */}
+      <div className="card bg-base-100 shadow-xl rounded-2xl border border-base-300 p-6">
+        <SkeletonBox className="h-6 w-1/4 mb-4" />
+        <SkeletonBox className="h-24 w-full" />
+      </div>
+
+      {/* Hotels Skeleton */}
+      <div>
+        <SkeletonBox className="h-8 w-1/4 mb-6" />
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {[...Array(3)].map((_, i) => (
+            <div key={i} className="card bg-base-100 shadow-xl rounded-2xl border border-base-300 p-6">
+              <SkeletonBox className="h-40 w-full mb-4" />
+              <SkeletonBox className="h-6 w-1/2 mb-2" />
+              <SkeletonBox className="h-4 w-3/4 mb-2" />
+              <SkeletonBox className="h-4 w-1/3 mb-4" />
+              <SkeletonBox className="h-10 w-24 mb-2" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Itinerary Skeleton */}
+      <div>
+        <SkeletonBox className="h-8 w-1/3 mb-6" />
+        {[...Array(2)].map((_, i) => (
+          <div key={i} className="card bg-base-100 shadow-xl rounded-2xl border border-base-300 p-6 mb-4">
+            <SkeletonBox className="h-6 w-1/4 mb-4" />
+            <SkeletonBox className="h-20 w-full" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

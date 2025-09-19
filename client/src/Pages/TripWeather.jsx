@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { CloudSun, Droplets, Wind, Thermometer, Cloud, CloudRain, CloudSnow, CloudFog, Sun, CloudLightning } from "lucide-react";
-import { axiosInstance } from "../components/Axios/axios";
+import useAxios from "../components/Axios/axios";
 
 const TripWeather = ({ tripId, tripPlan, setTripPlan }) => {
   const [loading, setLoading] = useState(true);
   const [weather, setWeather] = useState(null);
   const [weatherError, setWeatherError] = useState(null);
   const navigate = useNavigate();
+  const axiosInstance = useAxios();
 
   // Weather API key should be in your environment variables
   const WEATHER_API_KEY = import.meta.env.VITE_WEATHER_API_KEY;
@@ -17,12 +18,6 @@ const TripWeather = ({ tripId, tripPlan, setTripPlan }) => {
   
   useEffect(() => {
     const fetchTripDetails = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        alert("Please log in first.");
-        navigate("/login");
-        return;
-      }
       setLoading(true);
 
       try {
@@ -34,11 +29,7 @@ const TripWeather = ({ tripId, tripPlan, setTripPlan }) => {
         }
 
         // console.log("Fetching trip details for ID:", tripId);
-        const response = await axiosInstance.get(`/tripplan/${tripId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await axiosInstance.get(`/tripplan/${tripId}`);
 
         // console.log("Trip details response:", response.data);
         const { trip } = response.data;

@@ -1,9 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Home,
-  LogIn,
-  LogOut,
   Moon,
   PhoneCall,
   PlaneTakeoff,
@@ -12,22 +10,12 @@ import {
 } from "lucide-react";
 import { useTheme } from "../context/ThemeContext";
 import { THEMES } from "../Themes/index";
+import { SignedIn, SignedOut, UserButton } from "@clerk/clerk-react";
+import { dark } from "@clerk/themes";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { theme, changeTheme } = useTheme();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    setIsAuthenticated(!!token);
-  }, [isAuthenticated]);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setIsAuthenticated(false);
-    setIsMenuOpen(false);
-  };
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -65,9 +53,8 @@ export default function Navbar() {
               {THEMES.map((t) => (
                 <li key={t}>
                   <button
-                    className={`flex flex-col items-start w-full p-2 rounded-lg text-sm ${
-                      theme === t ? "bg-base-200" : "hover:bg-base-200/50"
-                    }`}
+                    className={`flex flex-col items-start w-full p-2 rounded-lg text-sm ${theme === t ? "bg-base-200" : "hover:bg-base-200/50"
+                      }`}
                     onClick={() => changeTheme(t)}
                     data-theme={t}
                   >
@@ -86,17 +73,14 @@ export default function Navbar() {
             </ul>
           </div>
 
-          {isAuthenticated ? (
-            <button className="btn btn-ghost gap-2" onClick={handleLogout}>
-              <LogOut className="w-5 h-5" />
-              <span className="hidden sm:inline">Logout</span>
-            </button>
-          ) : (
-            <Link to="/login" className="btn btn-ghost">
-              <LogIn className="text-primary-300" />
-              <span className="hidden sm:inline">Login</span>
+          <SignedIn>
+            <UserButton afterSignOutUrl="/" appearance={{ baseTheme: theme === 'dark' || theme === 'coffee' ? dark : undefined }} />
+          </SignedIn>
+          <SignedOut>
+            <Link to="/sign-in" className="btn btn-ghost">
+              Login
             </Link>
-          )}
+          </SignedOut>
         </div>
 
         {/* Mobile Hamburger */}
@@ -116,56 +100,53 @@ export default function Navbar() {
               <PhoneCall className="mr-2 text-primary-300" /> Customer Service
             </Link>
 
-           {/* Theme Dropdown */}
-<div className="dropdown">
-  <button
-    tabIndex={0}
-    className="btn btn-ghost gap-2"
-    onClick={() => setIsMenuOpen(!isMenuOpen)}
-  >
-    <Moon className="text-primary-300" />
-    <span className=" inline">Themes</span>
-  </button>
-  {isMenuOpen && (
-    <div
-      tabIndex={0}
-      className="dropdown-content z-[1] menu p-4 shadow bg-base-100 rounded-box w-60 max-h-64 overflow-y-auto mt-2"
-    >
-      <div className="grid grid-cols-2 gap-2">
-        {THEMES.map((t) => (
-          <button
-            key={t}
-            className={`flex flex-col items-center p-2 rounded-lg text-xs ${
-              theme === t ? "bg-base-200" : "hover:bg-base-200/50"
-            }`}
-            onClick={() => {
-              changeTheme(t);
-              setIsMenuOpen(false);
-            }}
-            data-theme={t}
-          >
-            <div className="flex gap-1">
-              <div className="w-4 h-4 rounded bg-primary" />
-              <div className="w-4 h-4 rounded bg-secondary" />
-            </div>
-            <span>{t.charAt(0).toUpperCase() + t.slice(1)}</span>
-          </button>
-        ))}
-      </div>
-    </div>
-  )}
-</div>
-
-
-            {isAuthenticated ? (
-              <button className="btn btn-ghost w-full justify-start" onClick={handleLogout}>
-                <LogOut className="mr-2 text-primary-300" /> Logout
+            {/* Theme Dropdown */}
+            <div className="dropdown">
+              <button
+                tabIndex={0}
+                className="btn btn-ghost gap-2"
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                <Moon className="text-primary-300" />
+                <span className=" inline">Themes</span>
               </button>
-            ) : (
-              <Link to="/login" className="btn btn-ghost w-full justify-start" onClick={toggleMenu}>
-                <LogIn className="mr-2 text-primary-300" /> Login
+              {isMenuOpen && (
+                <div
+                  tabIndex={0}
+                  className="dropdown-content z-[1] menu p-4 shadow bg-base-100 rounded-box w-60 max-h-64 overflow-y-auto mt-2"
+                >
+                  <div className="grid grid-cols-2 gap-2">
+                    {THEMES.map((t) => (
+                      <button
+                        key={t}
+                        className={`flex flex-col items-center p-2 rounded-lg text-xs ${theme === t ? "bg-base-200" : "hover:bg-base-200/50"
+                          }`}
+                        onClick={() => {
+                          changeTheme(t);
+                          setIsMenuOpen(false);
+                        }}
+                        data-theme={t}
+                      >
+                        <div className="flex gap-1">
+                          <div className="w-4 h-4 rounded bg-primary" />
+                          <div className="w-4 h-4 rounded bg-secondary" />
+                        </div>
+                        <span>{t.charAt(0).toUpperCase() + t.slice(1)}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" appearance={{ baseTheme: theme === 'dark' || theme === 'coffee' ? dark : undefined }} />
+            </SignedIn>
+            <SignedOut>
+              <Link to="/sign-in" className="btn btn-ghost w-full justify-start" onClick={toggleMenu}>
+                Login
               </Link>
-            )}
+            </SignedOut>
           </div>
         </div>
       )}

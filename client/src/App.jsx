@@ -1,33 +1,66 @@
 import React from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, Navigate } from "react-router-dom";
+import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
 
 import Navbar from "./components/Other/Navbar";
-import Register from "./components/Auth/Register";
-import LoginForm from "./components/Auth/LoginForm";
-
 import Hero from "./Pages/Hero";
-
 import { useTheme } from "./components/context/ThemeContext";
-
 import EnhancedTravelForm from "./Pages/TravelForm";
 import TripPlanDisplay from "./Pages/TripPlanDisplay";
 import Chat from "./Pages/Chat";
+import SignInPage from "./Pages/SignInPage";
+import SignUpPage from "./Pages/SignUpPage";
 
 const App = () => {
   const { theme } = useTheme();
+
   return (
     <div data-theme={theme} className="w-screen h-screen overflow-x-hidden">
-      {/* <Loader/> */}
       <Navbar />
       <Routes>
-        <Route path="/" element={<Hero />} />
-     
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/travel-preferences" element={<EnhancedTravelForm />} />
-        <Route path="/chat" element={<Chat />} />
-        <Route path="/trip-display/:tripId" element={<TripPlanDisplay />} />
+        <Route path="/" element={
+          <>
+            <SignedIn>
+              <Navigate to="/travel-preferences" />
+            </SignedIn>
+            <SignedOut>
+              <Hero />
+            </SignedOut>
+          </>
+        } />
+        <Route path="/sign-in" element={<SignInPage />} />
+        <Route path="/sign-up" element={<SignUpPage />} />
 
+        <Route
+          path="/travel-preferences"
+          element={
+            <SignedIn>
+              <EnhancedTravelForm />
+            </SignedIn>
+          }
+        />
+        <Route
+          path="/chat"
+          element={<Chat />}
+        />
+        <Route
+          path="/trip-display/:tripId"
+          element={
+            <SignedIn>
+              <TripPlanDisplay />
+            </SignedIn>
+          }
+        />
+
+        {/* Redirect users who are not signed in */}
+        <Route
+          path="/*"
+          element={
+            <SignedOut>
+              <RedirectToSignIn />
+            </SignedOut>
+          }
+        />
       </Routes>
     </div>
   );
