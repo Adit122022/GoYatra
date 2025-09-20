@@ -21,7 +21,7 @@ const TripHistory = () => {
     };
 
     fetchTripHistory();
-  }, [axiosInstance]);
+  }, []);
 
   if (loading) {
     return <Loader />;
@@ -44,15 +44,15 @@ const TripHistory = () => {
               return (
                 <div key={trip._id} className="card bg-base-100 shadow-xl image-full">
                   <figure>
-                      <img 
-                          src={imageUrl} 
-                          alt={`View of ${trip.destination}`}
-                          className="w-full h-full object-cover"
-                          onError={(e) => {
-                              e.target.onerror = null; 
-                              e.target.src="https://via.placeholder.com/400x225?text=Beautiful+Destination";
-                          }}
-                      />
+                    <img
+                      src={imageUrl}
+                      alt={`View of ${trip.destination}`}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = "https://via.placeholder.com/400x225?text=Beautiful+Destination";
+                      }}
+                    />
                   </figure>
                   <div className="card-body justify-between">
                     <div>
@@ -71,11 +71,11 @@ const TripHistory = () => {
           </div>
         ) : (
           <div className="text-center py-16">
-              <h3 className="text-2xl font-semibold">No trips found.</h3>
-              <p className="text-base-content/70 mt-2">Looks like you haven't planned any trips yet. Let's get started!</p>
-              <Link to="/travel-preferences" className="btn btn-primary mt-6">
-                  Plan a New Trip
-              </Link>
+            <h3 className="text-2xl font-semibold">No trips found.</h3>
+            <p className="text-base-content/70 mt-2">Looks like you haven't planned any trips yet. Let's get started!</p>
+            <Link to="/travel-preferences" className="btn btn-primary mt-6">
+              Plan a New Trip
+            </Link>
           </div>
         )}
       </div>
