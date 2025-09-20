@@ -7,7 +7,7 @@
 
 ## 🌐 Live Demo
 
-👉 [GoYatra-Live-Privew](https://go-yatra-pi.vercel.app/)
+👉 [GoYatra-Live-Privew](https://go-yatra.vercel.app/)
 
 
 ## 📁 Project Structure
