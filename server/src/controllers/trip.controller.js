@@ -132,3 +132,33 @@ module.exports.getTripHistory = async (req, res) => {
     res.status(500).json({ message: "Failed to fetch trip history" });
   }
 };
+
+module.exports.deleteTrip = async (req, res) => {
+    try {
+        const { tripId } = req.params;
+        const clerkId = req.auth.userId;
+
+        if (!mongoose.Types.ObjectId.isValid(tripId)) {
+            return res.status(400).json({ message: "Invalid trip ID" });
+        }
+
+        const trip = await tripModel.findById(tripId);
+        if (!trip) {
+            return res.status(404).json({ message: "Trip not found" });
+        }
+
+        const user = await userModel.findOne({ clerkId });
+        if (!user || trip.userId.toString() !== user._id.toString()) {
+            return res.status(403).json({ message: "You are not authorized to delete this trip" });
+        }
+
+        await tripModel.findByIdAndDelete(tripId);
+
+        await userModel.findByIdAndUpdate(user._id, { $pull: { trips: tripId } });
+
+        res.status(200).json({ message: "Trip deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting trip:", error);
+        res.status(500).json({ message: "Failed to delete trip" });
+    }
+};

@@ -1,5 +1,5 @@
 const express = require("express");
-const { createTrip, getTrip, getTripHistory } = require("../controllers/trip.controller");
+const { createTrip, getTrip, getTripHistory, deleteTrip } = require("../controllers/trip.controller");
 const { clerkAuthMiddleware } = require("../middleware/clerk.middleware");
 const { chatController } = require("../controllers/chat.controller");
 
@@ -13,5 +13,7 @@ router.post("/chat", chatController);
 router.get("/history", clerkAuthMiddleware, getTripHistory);
 
 router.get("/:tripId", clerkAuthMiddleware, getTrip);
+
+router.delete("/:tripId", clerkAuthMiddleware, deleteTrip);
 
 module.exports = router;
