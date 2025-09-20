@@ -15,7 +15,7 @@ const TripWeather = ({ tripId, tripPlan, setTripPlan }) => {
   const WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather";
 
   // Fetch trip details
-  
+
   useEffect(() => {
     const fetchTripDetails = async () => {
       setLoading(true);
@@ -82,16 +82,16 @@ const TripWeather = ({ tripId, tripPlan, setTripPlan }) => {
         console.log("No location available for weather fetch");
         return;
       }
-      
+
       try {
-        console.log("Fetching weather for:", tripPlan.tripDetails.location);
+        // console.log("Fetching weather for:", tripPlan.tripDetails.location);
         // Use a direct fetch for weather API to avoid potential CORS issues
         const response = await fetch(`${WEATHER_API_URL}?q=${encodeURIComponent(tripPlan.tripDetails.location)}&appid=${WEATHER_API_KEY}&units=metric`);
-        
+
         if (!response.ok) {
           throw new Error(`Weather API returned status: ${response.status}`);
         }
-        
+
         const data = await response.json();
         // console.log("Weather data:", data);
         setWeather(data);
@@ -111,9 +111,9 @@ const TripWeather = ({ tripId, tripPlan, setTripPlan }) => {
   const getWeatherIcon = (weatherCode) => {
     // Weather condition codes: https://openweathermap.org/weather-conditions
     if (!weatherCode) return <CloudSun className="h-8 w-8 text-blue-500" />;
-    
+
     const code = weatherCode.toString();
-    
+
     if (code.startsWith('2')) { // Thunderstorm
       return <CloudLightning className="h-8 w-8 text-gray-500" />;
     } else if (code.startsWith('3') || code.startsWith('5')) { // Drizzle or Rain
@@ -132,9 +132,9 @@ const TripWeather = ({ tripId, tripPlan, setTripPlan }) => {
   // Function to get background color based on weather
   const getWeatherBackground = (weatherCode) => {
     if (!weatherCode) return "bg-blue-50";
-    
+
     const code = weatherCode.toString();
-    
+
     if (code.startsWith('2')) { // Thunderstorm
       return "bg-gray-100";
     } else if (code.startsWith('3') || code.startsWith('5')) { // Drizzle or Rain
@@ -153,10 +153,10 @@ const TripWeather = ({ tripId, tripPlan, setTripPlan }) => {
   // Function to format date
   const formatDate = () => {
     const date = new Date();
-    return date.toLocaleDateString('en-US', { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
     });
   };
 
@@ -166,19 +166,19 @@ const TripWeather = ({ tripId, tripPlan, setTripPlan }) => {
         <CloudSun className="mr-2 h-5 w-5 text-blue-500" />
         Weather in {tripPlan?.tripDetails?.location || "Loading location..."}
       </h3>
-      
+
       {loading && !weather && !weatherError && (
         <div className="flex items-center justify-center h-24">
           <div className="animate-pulse text-gray-500">Loading weather data...</div>
         </div>
       )}
-      
+
       {weatherError && (
         <div className="bg-red-50 p-3 rounded-md text-red-600 text-sm">
           {weatherError}
         </div>
       )}
-      
+
       {weather && (
         <div className="mt-2">
           <div className="flex justify-between items-center">
@@ -202,7 +202,7 @@ const TripWeather = ({ tripId, tripPlan, setTripPlan }) => {
               </div>
             </div>
           </div>
-          
+
           <div className="grid grid-cols-3 gap-2 mt-4 text-sm">
             <div className="flex flex-col items-center p-2 bg-white/70 rounded-md shadow-sm">
               <Thermometer className="h-4 w-4 text-blue-500 mb-1" />
@@ -220,7 +220,7 @@ const TripWeather = ({ tripId, tripPlan, setTripPlan }) => {
               <div className="font-medium">{Math.round(weather.wind.speed)} m/s</div>
             </div>
           </div>
-          
+
           {/* Additional weather info */}
           <div className="mt-4 grid grid-cols-2 gap-2 text-xs">
             <div className="flex justify-between p-2 bg-white/70 rounded-md shadow-sm">
