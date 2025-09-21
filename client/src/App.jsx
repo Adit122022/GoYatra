@@ -42,9 +42,14 @@ const App = () => {
         />
         <Route
           path="/chat"
-          element={<SignedIn>
-            <Chat />
-          </SignedIn>}
+          element={<>
+            <SignedIn>
+              <Chat />
+            </SignedIn>
+            <SignedOut>
+              <Navigate to="/sign-in" />
+            </SignedOut>
+          </>}
         />
         <Route
           path="/trip-display/:tripId"
