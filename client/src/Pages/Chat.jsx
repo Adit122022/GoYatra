@@ -9,12 +9,7 @@ const intentButtons = [
   { label: "✈ Book Flight", message: "Help me book a flight to Paris." },
   { label: "☀ Weather in New York", message: "What's the weather in New York?" },
   { label: "🏨 Hotel in Tokyo", message: "Help me book a hotel in Tokyo." },
-  { label: "🌧 Forecast Berlin", message: "Will it rain tomorrow in Berlin?" },
-  { label: "💱 Exchange USD to EUR", message: "What's the exchange rate for USD to EUR?" },
   { label: "🏙 Top spots in Sydney", message: "What are the top tourist spots in Sydney?" },
-  { label: "🚗 Rent Car in Rome", message: "I need a rental car in Rome." },
-  { label: "🐛 App Crash", message: "The app keeps crashing on my phone." },
-  { label: "🌙 Dark Mode", message: "Can you add a dark mode feature?" },
 ];
 
 function Chat() {

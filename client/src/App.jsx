@@ -42,7 +42,9 @@ const App = () => {
         />
         <Route
           path="/chat"
-          element={<Chat />}
+          element={<SignedIn>
+            <Chat />
+          </SignedIn>}
         />
         <Route
           path="/trip-display/:tripId"
