@@ -2,13 +2,12 @@ import { useState, useEffect, useContext } from "react";
 import { motion } from "framer-motion";
 import { Plane, User, Heart, Users, Group , PiggyBank, Wallet, Gem, MapPin, Calendar, Globe, Search, ChevronRight } from "lucide-react";
 import Loader from "../components/Other/Loader";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import AsyncSelect from "react-select/async";
 import TiltedCard from "../components/ui/ReactBIt/TiltedCard";
 import { useNavigate } from "react-router-dom";
 import { PlanContext } from "../components/context/TripContext";
 import useAxios from "../components/Axios/axios";
 import { useAuth } from "@clerk/clerk-react";
-const API_KEY = import.meta.env.VITE_GOOGLE_API_KEY;
 
 export default function EnhancedTravelForm() {
   const [destination, setDestination] = useState("");
@@ -201,6 +200,22 @@ export default function EnhancedTravelForm() {
     duration: 0.5,
   };
 
+  const loadOptions = async (inputValue) => {
+    if (!inputValue) {
+      return [];
+    }
+    try {
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${inputValue}&addressdetails=1&limit=5`);
+      const data = await response.json();
+      return data.map((item) => ({
+        label: item.display_name,
+        value: item.display_name,
+      }));
+    } catch (error) {
+      console.error("Error fetching places:", error);
+      return [];
+    }
+  };
 
   //  custom styles for the  google
   const customStyles = {
@@ -321,21 +336,20 @@ export default function EnhancedTravelForm() {
         </div>
         
         <div className="flex-grow">
-          <GooglePlacesAutocomplete
-            apiKey={API_KEY}
-            selectProps={{
-              value: destination,
-              onChange: (value) => {
-                setDestination(value);
-                setErrors({ ...errors, destination: "" });
-              },
-              placeholder: "Search for a city or landmark...",
-              styles: customStyles,
-              components: {
-                DropdownIndicator: () => null, // Remove the dropdown arrow
-              },
-              isClearable: true,
+          <AsyncSelect
+            loadOptions={loadOptions}
+            value={destination}
+            onChange={(value) => {
+              setDestination(value);
+              setErrors({ ...errors, destination: "" });
             }}
+            placeholder="Search for a city or landmark..."
+            styles={customStyles}
+            components={{
+              DropdownIndicator: () => null, // Remove the dropdown arrow
+            }}
+            isClearable={true}
+            noOptionsMessage={() => "Type to search locations"}
           />
         </div>
       </div>

@@ -1,17 +1,18 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
+const { GoogleGenAI } = require("@google/genai");
 
 // Ensure the API key is available
 if (!process.env.GOOGLE_API_KEY) {
-  console.error("Error: GOOGLE_API_KEY is not set in the environment variables.");
+  console.error(
+    "Error: GOOGLE_API_KEY is not set in the environment variables.",
+  );
   throw new Error("Missing GOOGLE_API_KEY");
 }
 
-// Initialize the Google Generative AI client
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+// Initialize the Google Gen AI client
+const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
 
 // Use the correct model
-const GEMINI_MODEL = "gemini-1.5-flash";
-
+const GEMINI_MODEL = "gemini-2.0-flash-lite";
 
 /**
  * Chat with Gemini as GoYatra's travel support assistant
@@ -24,15 +25,7 @@ async function chatWithGemini(message) {
       throw new Error("Invalid input message. It must be a non-empty string.");
     }
 
-    const model = genAI.getGenerativeModel({ model: GEMINI_MODEL });
-
-    // System instructions with custom GoYatra details
-    const prompt = [
-      {
-        role: "user",
-        parts: [
-          {
-            text: `
+    const systemInstruction = `
 You are "GoYatra Assistant", a helpful and friendly **customer support AI agent** for our travel website **GoYatra**.
 
 Your job is to assist users with:
@@ -54,20 +47,26 @@ Your job is to assist users with:
 **"I'm your travel support assistant! Feel free to ask me anything related to bookings, payments, cancellations, or travel help."**
 
 Always be polite, clear, and empathetic. Sound human and supportive in your tone.
+    `.trim();
 
-Now respond to the user’s query:
-"${message}"
-          `.trim(),
-          },
-        ],
+    let responseText = "";
+
+    const streamResult = await ai.models.generateContentStream({
+      model: GEMINI_MODEL,
+      contents: message,
+      config: {
+        systemInstruction,
       },
-    ];
+    });
 
-    const result = await model.generateContent({ contents: prompt });
+    for await (const chunk of streamResult) {
+      responseText += chunk.text;
+    }
 
-    const responseText = result.response.candidates?.[0]?.content?.parts?.[0]?.text;
-
-    return responseText || "I'm here to help with your travel plans! Can you clarify your request?";
+    return (
+      responseText ||
+      "I'm here to help with your travel plans! Can you clarify your request?"
+    );
   } catch (error) {
     console.error("Gemini error:", error.message || error);
     return "Sorry, I'm unable to respond right now. Please try again later.";
