@@ -1,52 +1,29 @@
-const { GoogleGenAI } = require("@google/genai");
+const { ChatGoogleGenerativeAI } = require("@langchain/google-genai");
 
 const apiKey = process.env.GOOGLE_API_KEY;
-const ai = new GoogleGenAI({ apiKey });
 
-const MODEL = "gemini-2.0-flash-lite";
+if (!apiKey) {
+  console.error("Warning: GOOGLE_API_KEY is not set in environment variables.");
+}
 
-const generationConfig = {
+const model = new ChatGoogleGenerativeAI({
+  model: process.env.GEMINI_MODEL || "gemini-1.5-flash",
+  apiKey: apiKey,
   temperature: 1,
-  topP: 0.95,
-  topK: 40,
   maxOutputTokens: 8192,
-  responseMimeType: "application/json",
-};
+});
 
-const INITIAL_HISTORY = [
-  {
-    role: "user",
-    parts: [
-      {
-        text: "Generate Travel Plan for Location: Las Vegas, for 3 Days for Couple with a Cheap budget ,Give me a Hotels options list with HotelName, Hotel address, Price, hotel image url, geo coordinates, rating, descriptions and suggest itinerary with placeName, Place Details, Place Image Url, Geo Coordinates, ticket Pricing, rating, Time travel each of the location for 3 days with each day plan with best time to visit in JSON format.",
-      },
-    ],
-  },
-  {
-    role: "model",
-    parts: [
-      {
-        text: '{\n  "tripDetails": {\n    "location": "Las Vegas",\n    "duration": "3 Days",\n    "travelers": "Couple",\n    "budget": "Cheap"\n  },\n  "hotelOptions": [],\n  "itinerary": {}\n}',
-      },
-    ],
-  },
-];
-
-// chatSession is an object with a sendMessage method compatible with the old interface
+// chatSession adapter for non-stream usage to preserve backwards compatibility
 const chatSession = {
   sendMessage: async (message) => {
-    const chat = ai.chats.create({
-      model: MODEL,
-      config: generationConfig,
-      history: INITIAL_HISTORY,
-    });
-    const result = await chat.sendMessage({ message });
+    const response = await model.invoke(message);
+    const textContent = typeof response.content === "string" ? response.content : JSON.stringify(response.content);
     return {
       response: {
-        text: () => result.text,
+        text: () => textContent,
       },
     };
   },
 };
 
-module.exports = { chatSession };
+module.exports = { model, chatSession };

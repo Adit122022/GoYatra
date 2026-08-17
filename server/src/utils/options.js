@@ -1,2 +1,39 @@
-module.exports.AI_PROMPT =
-  "Generate Travel Plan for Location:{location} , for {totalDays} Days for {traveler} with a {budget} budget ,Give me a Hotels options list with HotelName, Hotel address, Price, hotel image url, geo coordinates, rating, descriptions and suggest itinerary with placeName, Place Details, Place Image Url, Geo Coordinates, ticket Pricing, rating, Time travel each of the location for {totalDays} days with each day plan with best time to visit in JSON format.";
+module.exports.AI_PROMPT = `Generate a detailed Travel Plan for Location: {location}, for {totalDays} Days, for {traveler} with a {budget} budget.
+
+IMPORTANT: Return ONLY valid JSON matching this exact structure (no markdown fences, pure JSON):
+{
+  "tripDetails": {
+    "location": "{location}",
+    "duration": "{totalDays} Days",
+    "travelers": "{traveler}",
+    "budget": "{budget}"
+  },
+  "hotelOptions": [
+    {
+      "hotelName": "Hotel Name",
+      "hotelAddress": "Full Hotel Street Address, City",
+      "price": "$XX per night",
+      "hotelImageUrl": "",
+      "geoCoordinates": { "latitude": 0.0, "longitude": 0.0 },
+      "rating": 4.5,
+      "description": "Short hotel description"
+    }
+  ],
+  "itinerary": {
+    "day1": {
+      "theme": "Theme of Day 1",
+      "bestTimeToVisit": "Morning / Afternoon / Evening",
+      "plan": [
+        {
+          "placeName": "Place Name",
+          "placeDetails": "Details about place",
+          "placeImageUrl": "",
+          "geoCoordinates": { "latitude": 0.0, "longitude": 0.0 },
+          "ticketPricing": "$XX or Free",
+          "rating": 4.5,
+          "timeTravel": "1 to 2 hours"
+        }
+      ]
+    }
+  }
+}`;

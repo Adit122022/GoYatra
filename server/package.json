@@ -15,6 +15,8 @@
     "@clerk/clerk-sdk-node": "^4.13.23",
     "@google/genai": "^2.10.0",
     "@google/generative-ai": "^0.24.0",
+    "@langchain/core": "^1.2.8",
+    "@langchain/google-genai": "^2.2.0",
     "axios": "^1.9.0",
     "bcrypt": "^5.1.1",
     "bcryptjs": "^2.4.3",

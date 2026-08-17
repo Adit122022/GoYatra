@@ -1,4 +1,4 @@
-const { GoogleGenAI } = require("@google/genai");
+const { ChatGoogleGenerativeAI } = require("@langchain/google-genai");
 
 // Ensure the API key is available
 if (!process.env.GOOGLE_API_KEY) {
@@ -8,11 +8,12 @@ if (!process.env.GOOGLE_API_KEY) {
   throw new Error("Missing GOOGLE_API_KEY");
 }
 
-// Initialize the Google Gen AI client
-const ai = new GoogleGenAI({ apiKey: process.env.GOOGLE_API_KEY });
-
-// Use the correct model
-const GEMINI_MODEL = "gemini-2.0-flash-lite";
+// Initialize the Google Gen AI model via LangChain
+const model = new ChatGoogleGenerativeAI({
+  model: process.env.GEMINI_MODEL || "gemini-3.5-flash",
+  apiKey: process.env.GOOGLE_API_KEY,
+  temperature: 0.7,
+});
 
 /**
  * Chat with Gemini as GoYatra's travel support assistant
@@ -49,18 +50,16 @@ Your job is to assist users with:
 Always be polite, clear, and empathetic. Sound human and supportive in your tone.
     `.trim();
 
+    const fullPrompt = `${systemInstruction}\n\nUser Question: ${message}`;
+    const streamResult = await model.stream(fullPrompt);
+
     let responseText = "";
-
-    const streamResult = await ai.models.generateContentStream({
-      model: GEMINI_MODEL,
-      contents: message,
-      config: {
-        systemInstruction,
-      },
-    });
-
     for await (const chunk of streamResult) {
-      responseText += chunk.text;
+      if (typeof chunk.content === "string") {
+        responseText += chunk.content;
+      } else if (Array.isArray(chunk.content)) {
+        responseText += chunk.content.map(c => typeof c === "string" ? c : c.text || "").join("");
+      }
     }
 
     return (
@@ -74,3 +73,4 @@ Always be polite, clear, and empathetic. Sound human and supportive in your tone
 }
 
 module.exports = chatWithGemini;
+

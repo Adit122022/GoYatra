@@ -113,6 +113,9 @@ export default function EnhancedTravelForm() {
     setFormStep(formStep - 1);
   };
 
+  const [streamedText, setStreamedText] = useState("");
+  const { getToken } = useAuth();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -135,26 +138,71 @@ export default function EnhancedTravelForm() {
 
     setErrors({});
     setLoading(true);
+    setStreamedText("");
 
     try {
-      const response = await axiosInstance.post(
-        "tripplan/createtrip",
-        {
+      const token = await getToken();
+      const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+
+      const response = await fetch(`${baseUrl}/tripplan/streamtrip`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
           destination: destination?.label,
           days,
           budget,
           travelGroup,
-        }
-      );
+        }),
+      });
 
-      const tripData = response.data.trip;
-      setTripPlan(tripData);
-      const tripId = response.data.trip._id;
-      navigate(`/trip-display/${tripId}`);
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to create trip stream");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split("\n\n");
+        buffer = lines.pop() || "";
+
+        for (const line of lines) {
+          if (line.startsWith("data: ")) {
+            const rawData = line.replace(/^data:\s*/, "");
+            try {
+              const data = JSON.parse(rawData);
+              if (data.chunk) {
+                setStreamedText((prev) => prev + data.chunk);
+              }
+              if (data.error) {
+                throw new Error(data.error);
+              }
+              if (data.done && data.trip) {
+                setTripPlan(data.trip);
+                const tripId = data.tripId || data.trip._id;
+                navigate(`/trip-display/${tripId}`);
+                return;
+              }
+            } catch (err) {
+              if (err.message !== "Unexpected end of JSON input") {
+                console.error("Parse error on chunk:", err);
+              }
+            }
+          }
+        }
+      }
     } catch (error) {
       console.error("Failed to create trip:", error);
-      alert(error?.response?.data?.message || "Failed to create trip. Please try again.");
-    } finally {
+      alert(error?.message || "Failed to create trip. Please try again.");
       setLoading(false);
     }
 
@@ -729,7 +777,36 @@ export default function EnhancedTravelForm() {
   };
 
   if (loading) {
-    return <Loader />;
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-slate-950 text-white">
+        <div className="w-full max-w-3xl bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-2xl space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-3 h-3 rounded-full bg-emerald-500 animate-ping" />
+              <h2 className="text-xl font-bold text-slate-100 flex items-center gap-2">
+                <Plane className="w-6 h-6 text-blue-400 animate-bounce" />
+                Crafting Your Custom Itinerary in Realtime...
+              </h2>
+            </div>
+            <span className="text-xs font-mono text-slate-400 bg-slate-800 px-3 py-1 rounded-full border border-slate-700">
+              LangChain SSE Stream
+            </span>
+          </div>
+
+          <div className="relative bg-slate-950 rounded-xl p-4 border border-slate-800 font-mono text-sm text-slate-300 h-80 overflow-y-auto shadow-inner flex flex-col">
+            <div className="flex-1 whitespace-pre-wrap leading-relaxed text-emerald-400/90 font-mono text-xs sm:text-sm">
+              {streamedText || "Connecting to Gemini via LangChain..."}
+            </div>
+          </div>
+
+          <div className="flex justify-between items-center text-xs text-slate-400 pt-2">
+            <span>Destination: <strong className="text-white">{destination?.label}</strong></span>
+            <span>Duration: <strong className="text-white">{days} Days</strong></span>
+            <span className="animate-pulse text-blue-400">Fetching photos & saving trip...</span>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (
